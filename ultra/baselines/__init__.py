@@ -69,6 +69,6 @@ register(
 register(
     locator="lane_with_speed_dqn-v0",
     entry_point=lambda **kwargs: BaselineAgentSpec(
-        action_type=ActionSpaceType.Lane, policy_class=LaneWithSpeedDQNPolicy, **kwargs
+        action_type=ActionSpaceType.LaneWithContinuousSpeed, policy_class=LaneWithSpeedDQNPolicy, **kwargs
     ),
 )
