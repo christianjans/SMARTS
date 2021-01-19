@@ -25,6 +25,8 @@ from .ppo.ppo.policy import PPOPolicy
 from .dqn.dqn.policy import DQNPolicy
 from .ddpg.ddpg.policy import TD3Policy
 from .bdqn.bdqn.policy import BehavioralDQNPolicy
+from .lane_dqn.lane_dqn.policy import LaneDQNPolicy
+from .lane_with_speed_dqn.lane_with_speed_dqn.policy import LaneWithSpeedDQNPolicy
 from smarts.core.controllers import ActionSpaceType
 from ultra.baselines.agent_spec import BaselineAgentSpec
 
@@ -56,5 +58,17 @@ register(
     locator="bdqn-v0",
     entry_point=lambda **kwargs: BaselineAgentSpec(
         action_type=ActionSpaceType.Lane, policy_class=BehavioralDQNPolicy, **kwargs
+    ),
+)
+register(
+    locator="lane_dqn-v0",
+    entry_point=lambda **kwargs: BaselineAgentSpec(
+        action_type=ActionSpaceType.Lane, policy_class=LaneDQNPolicy, **kwargs
+    ),
+)
+register(
+    locator="lane_with_speed_dqn-v0",
+    entry_point=lambda **kwargs: BaselineAgentSpec(
+        action_type=ActionSpaceType.Lane, policy_class=LaneWithSpeedDQNPolicy, **kwargs
     ),
 )
