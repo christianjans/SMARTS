@@ -33,6 +33,7 @@ from smarts.core.agent_interface import (
 from ultra.baselines.common.yaml_loader import load_yaml
 from smarts.core.agent import AgentSpec
 from ultra.baselines.adapter import BaselineAdapter
+from ultra.baselines.common.baseline_state_preprocessor import BaselineStatePreprocessor
 
 
 class BaselineAgentSpec(AgentSpec):
@@ -88,7 +89,7 @@ class BaselineAgentSpec(AgentSpec):
                     policy_params=policy_params, checkpoint_dir=checkpoint_dir
                 ),
                 agent_builder=policy_class,
-                observation_adapter=adapter.observation_adapter,
+                observation_adapter=BaselineStatePreprocessor._adapt_observation_for_baseline,
                 reward_adapter=adapter.reward_adapter,
             )
         return spec

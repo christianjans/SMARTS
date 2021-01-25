@@ -32,7 +32,7 @@ from ultra.baselines.bdqn.bdqn.explore import EpsilonExplore
 from ultra.baselines.common.replay_buffer import ReplayBuffer
 from ultra.baselines.common.social_vehicle_config import get_social_vehicle_configs
 from ultra.baselines.common.yaml_loader import load_yaml
-from ultra.baselines.common.state_preprocessor import *
+from ultra.baselines.common.baseline_state_preprocessor import BaselineStatePreprocessor
 
 
 class BehavioralDQNPolicy(DQNPolicy):
@@ -104,7 +104,7 @@ class BehavioralDQNPolicy(DQNPolicy):
         )
 
         self.social_vehicle_encoder = self.social_vehicle_config["encoder"]
-        self.state_description = get_state_description(
+        self.state_description = BaselineStatePreprocessor.get_state_description(
             policy_params["social_vehicles"],
             policy_params["observation_num_lookahead"],
             prev_action_size,
@@ -143,8 +143,8 @@ class BehavioralDQNPolicy(DQNPolicy):
 
         self.action_space_type = "lane"
         self.to_real_action = lambda action: self.lane_actions[action[0]]
-        self.state_preprocessor = StatePreprocessor(
-            preprocess_state, self.lane_action_to_index, self.state_description
+        self.state_preprocessor = BaselineStatePreprocessor(
+            self.lane_action_to_index, self.state_description
         )
         self.replay = ReplayBuffer(
             buffer_size=int(policy_params["replay_buffer"]["buffer_size"]),
