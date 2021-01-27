@@ -153,7 +153,7 @@ def get_simulation_info(net_file, route_file, delta_t=1.0):
 def save_histogram(time_taken, fn, title):
     plt.figure()
     plt.title(title)
-    plt.hist(time_taken, normed=False, bins=20)
+    plt.hist(time_taken, density=False, bins=20)
     plt.savefig(fn)
 
 
