@@ -127,6 +127,8 @@ def get_simulation_info(net_file, route_file, delta_t=1.0):
 
     max_t = 0
     for v in vehicle_stats.values():
+        if v["type"] not in v_types:
+            continue
         v_t = v["type"]
         v_r = v["route"]
         time_taken = v["end"] - v["start"]
