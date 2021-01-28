@@ -24,17 +24,13 @@ class BaselineStatePreprocessor(StatePreprocessor):
         "road_speed": 30.0,
     }
 
-    def __init__(self, convert_action_func, state_description):
-        self._convert_action_func = convert_action_func
-        self._state_description = state_description
-
-    @staticmethod
-    def get_state_description(
+    def __init__(
+        self,
         social_vehicle_config,
         observation_waypoints_lookahead,
         action_size,
     ):
-        return {
+        self._state_description = {
             "images": {},
             "low_dim_states": {
                 "speed": 1,
@@ -51,6 +47,10 @@ class BaselineStatePreprocessor(StatePreprocessor):
             else 0,
         }
 
+    @property
+    def num_low_dim_states(self):
+        return sum(self._state_description["low_dim_states"].values())
+
     def _preprocess_state(
         self,
         state,
@@ -63,9 +63,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
         device=None,
     ):
         # Obtain the information from the state needed by the baselines.
-        # NOTE: Not needed if the state has already been adapted.
-        # state = self._adapt_observation_for_baseline(state)
-        state = state.copy()
+        state = BaselineStatePreprocessor._adapt_observation_for_baseline(state)
 
         # Get the images from the state.
         images = {}
@@ -75,9 +73,6 @@ class BaselineStatePreprocessor(StatePreprocessor):
             image = image.to(device) if device else image
             image = normalize_im(image) if normalize else image
             images[k] = image
-
-        # if "action" in state:
-        #     state["action"] = self._convert_action_func(state["action"])
 
         # Set the action in the basic state as the previous action.
         state["action"] = prev_action

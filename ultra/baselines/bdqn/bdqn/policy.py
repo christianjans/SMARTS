@@ -102,13 +102,13 @@ class BehavioralDQNPolicy(DQNPolicy):
         self.social_vehicle_config = get_social_vehicle_configs(
             **policy_params["social_vehicles"]
         )
-
-        self.social_vehicle_encoder = self.social_vehicle_config["encoder"]
-        self.state_description = BaselineStatePreprocessor.get_state_description(
+        self.state_preprocessor = BaselineStatePreprocessor(
             policy_params["social_vehicles"],
             policy_params["observation_num_lookahead"],
             prev_action_size,
         )
+
+        self.social_vehicle_encoder = self.social_vehicle_config["encoder"]
         self.social_feature_encoder_class = self.social_vehicle_encoder[
             "social_feature_encoder_class"
         ]
@@ -143,9 +143,6 @@ class BehavioralDQNPolicy(DQNPolicy):
 
         self.action_space_type = "lane"
         self.to_real_action = lambda action: self.lane_actions[action[0]]
-        self.state_preprocessor = BaselineStatePreprocessor(
-            self.lane_action_to_index, self.state_description
-        )
         self.replay = ReplayBuffer(
             buffer_size=int(policy_params["replay_buffer"]["buffer_size"]),
             batch_size=int(policy_params["replay_buffer"]["batch_size"]),

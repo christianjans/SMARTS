@@ -86,16 +86,13 @@ class PPOPolicy(Agent):
         self.social_vehicle_config = get_social_vehicle_configs(
             **policy_params["social_vehicles"]
         )
-
-        self.social_vehicle_encoder = self.social_vehicle_config["encoder"]
-        self.state_description = BaselineStatePreprocessor.get_state_description(
+        self.state_preprocessor = BaselineStatePreprocessor(
             policy_params["social_vehicles"],
             policy_params["observation_num_lookahead"],
             self.action_size,
         )
-        self.state_preprocessor = BaselineStatePreprocessor(
-            to_2d_action, self.state_description
-        )
+
+        self.social_vehicle_encoder = self.social_vehicle_config["encoder"]
         self.social_feature_encoder_class = self.social_vehicle_encoder[
             "social_feature_encoder_class"
         ]
@@ -129,7 +126,7 @@ class PPOPolicy(Agent):
     @property
     def state_size(self):
         # Adjusting state_size based on number of features (ego+social)
-        size = sum(self.state_description["low_dim_states"].values())
+        size = self.state_preprocessor.num_low_dim_states
         if self.social_feature_encoder_class:
             size += self.social_feature_encoder_class(
                 **self.social_feature_encoder_params
@@ -168,7 +165,7 @@ class PPOPolicy(Agent):
 
     def step(self, state, action, reward, next_state, done):
         # dont treat timeout as done equal to True
-        max_steps_reached = state["events"].reached_max_episode_steps
+        max_steps_reached = state.events.reached_max_episode_steps
         if max_steps_reached:
             done = False
         action = to_2d_action(action)
