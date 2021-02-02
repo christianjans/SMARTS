@@ -133,24 +133,24 @@ class BaselineStatePreprocessor(StatePreprocessor):
     @staticmethod
     def _adapt_observation_for_baseline(state):
         # Get basic information about the ego vehicle.
-        ego_position = StatePreprocessor._extract_ego_position(state)
-        ego_heading = StatePreprocessor._extract_ego_heading(state)
-        ego_speed = StatePreprocessor._extract_ego_speed(state)
-        ego_steering = StatePreprocessor._extract_ego_steering(state)
-        ego_start = StatePreprocessor._extract_ego_start(state)
-        ego_goal = StatePreprocessor._extract_ego_goal(state)
-        ego_waypoints = StatePreprocessor._extract_ego_waypoints(state)
-        social_vehicle_states = StatePreprocessor._extract_social_vehicles(state)
+        ego_position = StatePreprocessor.extract_ego_position(state)
+        ego_heading = StatePreprocessor.extract_ego_heading(state)
+        ego_speed = StatePreprocessor.extract_ego_speed(state)
+        ego_steering = StatePreprocessor.extract_ego_steering(state)
+        ego_start = StatePreprocessor.extract_ego_start(state)
+        ego_goal = StatePreprocessor.extract_ego_goal(state)
+        ego_waypoints = StatePreprocessor.extract_ego_waypoints(state)
+        social_vehicle_states = StatePreprocessor.extract_social_vehicles(state)
 
         # Identify the path the ego is following.
-        ego_goal_path = StatePreprocessor._extract_ego_path(
+        ego_goal_path = StatePreprocessor.extract_ego_path(
             goal=ego_goal,
             waypoints=ego_waypoints,
             start=ego_start,
         )
 
         # Get the closest waypoint to the ego.
-        ego_closest_waypoint, _ = StatePreprocessor._extract_closest_waypoint(
+        ego_closest_waypoint, _ = StatePreprocessor.extract_closest_waypoint(
             goal_path=ego_goal_path,
             ego_position=ego_position,
             ego_heading=ego_heading,
