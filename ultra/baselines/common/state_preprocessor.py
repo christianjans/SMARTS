@@ -19,12 +19,23 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+from typing import (
+    List,
+    Tuple,
+)
 import numpy as np
 
-from smarts.core.sensors import Observation
+from smarts.core.scenario import (
+    Goal,
+    Start,
+)
+from smarts.core.sensors import (
+    Heading,
+    Observation,
+)
 from ultra.baselines.common.social_vehicle_extraction import (
     get_social_vehicles_leading,
-    get_social_vehicles_states_sorted_by_distance
+    get_social_vehicles_states_sorted_by_distance,
 )
 from ultra.utils.common import (
     get_closest_waypoint,
@@ -33,10 +44,10 @@ from ultra.utils.common import (
 
 
 class StatePreprocessor:
-    def __call__(self, state, *args, **kwargs):
+    def __call__(self, state: Observation, *args, **kwargs):
         return self._preprocess_state(state=state, *args, **kwargs)
 
-    def _preprocess_state(self, state, *args, **kwargs):
+    def _preprocess_state(self, state: Observation, *args, **kwargs):
         raise NotImplementedError("State preprocessing is not defined.")
 
     @staticmethod
@@ -68,7 +79,7 @@ class StatePreprocessor:
         return social_vehicles
 
     @staticmethod
-    def extract_ego_speed(state: Observation):
+    def extract_ego_speed(state: Observation) -> float:
         """
         Extracts the ego vehicle's speed from a raw environment observation.
 
@@ -81,7 +92,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.speed
 
     @staticmethod
-    def extract_ego_steering(state: Observation):
+    def extract_ego_steering(state: Observation) -> float:
         """
         Extracts the ego vehicle's speed from a raw environment observation.
 
@@ -94,7 +105,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.steering
 
     @staticmethod
-    def extract_ego_position(state: Observation):
+    def extract_ego_position(state: Observation) -> Tuple:
         """
         Extracts the ego vehicle's position from a raw environment observation.
 
@@ -108,7 +119,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.position
 
     @staticmethod
-    def extract_ego_heading(state: Observation):
+    def extract_ego_heading(state: Observation) -> Heading:
         """
         Extracts the ego vehicle's heading from a raw environment observation.
 
@@ -122,7 +133,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.heading
 
     @staticmethod
-    def extract_ego_waypoints(state: Observation):
+    def extract_ego_waypoints(state: Observation) -> List:
         """
         Extracts the ego vehicle's waypoints from a raw environment observation.
 
@@ -135,7 +146,7 @@ class StatePreprocessor:
         return state.waypoint_paths
 
     @staticmethod
-    def extract_ego_start(state: Observation):
+    def extract_ego_start(state: Observation) -> Start:
         """
         Extracts the ego vehicle's mission start from a raw environemnt observation.
 
@@ -150,7 +161,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.mission.start
 
     @staticmethod
-    def extract_ego_goal(state: Observation):
+    def extract_ego_goal(state: Observation) -> Goal:
         """
         Extracts the ego vehicle's mission goal from a raw environment observation.
 
@@ -181,7 +192,7 @@ class StatePreprocessor:
         )
 
     @staticmethod
-    def extract_social_vehicles(state: Observation):
+    def extract_social_vehicles(state: Observation) -> List:
         """
         Extracts the social vehicles from a raw environment observation.
 
