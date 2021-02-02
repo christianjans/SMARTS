@@ -76,7 +76,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
 
         # Obtain the next waypoints.
         _, lookahead_waypoints = self.extract_closest_waypoint(
-            goal_path=state["goal_path"],
+            ego_goal_path=state["goal_path"],
             ego_position=state["ego_position"],
             ego_heading=state["heading"],
             num_lookahead=observation_num_lookahead,
@@ -143,13 +143,13 @@ class BaselineStatePreprocessor(StatePreprocessor):
         social_vehicle_states = StatePreprocessor.extract_social_vehicles(state)
 
         # Identify the path the ego is following.
-        ego_goal_path = StatePreprocessor.extract_ego_path(
-            goal=ego_goal, waypoints=ego_waypoints, start=ego_start,
+        ego_goal_path = StatePreprocessor.extract_ego_goal_path(
+            ego_goal=ego_goal, ego_waypoints=ego_waypoints, ego_start=ego_start,
         )
 
         # Get the closest waypoint to the ego.
         ego_closest_waypoint, _ = StatePreprocessor.extract_closest_waypoint(
-            goal_path=ego_goal_path,
+            ego_goal_path=ego_goal_path,
             ego_position=ego_position,
             ego_heading=ego_heading,
             num_lookahead=100,

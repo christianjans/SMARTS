@@ -132,16 +132,16 @@ class StatePreprocessor:
         return state.ego_vehicle_state.mission.goal
 
     @staticmethod
-    def extract_ego_path(goal, waypoints, start):
-        return get_path_to_goal(goal=goal, paths=waypoints, start=start)
+    def extract_ego_goal_path(ego_goal, ego_waypoints, ego_start):
+        return get_path_to_goal(goal=ego_goal, paths=ego_waypoints, start=ego_start)
 
     @staticmethod
     def extract_closest_waypoint(
-        goal_path, ego_position, ego_heading, num_lookahead=100
+        ego_goal_path, ego_position, ego_heading, num_lookahead=100
     ):
         return get_closest_waypoint(
             num_lookahead=num_lookahead,
-            goal_path=goal_path,
+            goal_path=ego_goal_path,
             ego_position=ego_position,
             ego_heading=ego_heading,
         )
