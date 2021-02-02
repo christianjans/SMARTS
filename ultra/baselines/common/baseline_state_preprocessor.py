@@ -60,7 +60,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
         device=None,
     ):
         # Obtain the information from the state needed by the baselines.
-        state = BaselineStatePreprocessor._adapt_observation_for_baseline(state)
+        state = self._adapt_observation_for_baseline(state)
 
         # Get the images from the state.
         images = {}
@@ -75,7 +75,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
         state["action"] = prev_action
 
         # Obtain the next waypoints.
-        _, lookahead_waypoints = StatePreprocessor.extract_closest_waypoint(
+        _, lookahead_waypoints = self.extract_closest_waypoint(
             goal_path=state["goal_path"],
             ego_position=state["ego_position"],
             ego_heading=state["heading"],
@@ -85,7 +85,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
 
         # Normalize the low-dimensional states and concatenate them.
         normalized = [
-            BaselineStatePreprocessor._normalize(key, state[key])
+            self._normalize(key, state[key])
             for key in self._state_description["low_dim_states"]
         ]
         low_dim_states = [
