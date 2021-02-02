@@ -5,7 +5,6 @@ import torch
 from ultra.baselines.common.social_vehicle_extraction import get_social_vehicles
 from ultra.baselines.common.state_preprocessor import StatePreprocessor
 from ultra.utils.common import (
-    get_closest_waypoint,
     rotate2d_vector,
     normalize_im,
 )
@@ -76,11 +75,11 @@ class BaselineStatePreprocessor(StatePreprocessor):
         state["action"] = prev_action
 
         # Obtain the next waypoints.
-        _, lookahead_waypoints = get_closest_waypoint(
-            num_lookahead=observation_num_lookahead,
+        _, lookahead_waypoints = StatePreprocessor.extract_closest_waypoint(
             goal_path=state["goal_path"],
             ego_position=state["ego_position"],
             ego_heading=state["heading"],
+            num_lookahead=observation_num_lookahead,
         )
         state["waypoints_lookahead"] = np.hstack(lookahead_waypoints)
 
