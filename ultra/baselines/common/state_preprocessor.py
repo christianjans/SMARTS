@@ -34,7 +34,7 @@ class StatePreprocessor:
         raise NotImplementedError("State preprocessing is not defined.")
 
     @staticmethod
-    def _extract_ego_speed(state: Observation):
+    def extract_ego_speed(state: Observation):
         """
         Extracts the ego vehicle's speed from a raw environment observation.
 
@@ -47,7 +47,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.speed
 
     @staticmethod
-    def _extract_ego_steering(state: Observation):
+    def extract_ego_steering(state: Observation):
         """
         Extracts the ego vehicle's speed from a raw environment observation.
 
@@ -60,7 +60,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.steering
 
     @staticmethod
-    def _extract_ego_position(state: Observation):
+    def extract_ego_position(state: Observation):
         """
         Extracts the ego vehicle's position from a raw environment observation.
 
@@ -74,7 +74,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.position
 
     @staticmethod
-    def _extract_ego_heading(state: Observation):
+    def extract_ego_heading(state: Observation):
         """
         Extracts the ego vehicle's heading from a raw environment observation.
 
@@ -88,7 +88,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.heading
 
     @staticmethod
-    def _extract_ego_waypoints(state: Observation):
+    def extract_ego_waypoints(state: Observation):
         """
         Extracts the ego vehicle's waypoints from a raw environment observation.
 
@@ -101,7 +101,7 @@ class StatePreprocessor:
         return state.waypoint_paths
 
     @staticmethod
-    def _extract_ego_start(state: Observation):
+    def extract_ego_start(state: Observation):
         """
         Extracts the ego vehicle's mission start from a raw environemnt observation.
 
@@ -116,7 +116,7 @@ class StatePreprocessor:
         return state.ego_vehicle_state.mission.start
 
     @staticmethod
-    def _extract_ego_goal(state: Observation):
+    def extract_ego_goal(state: Observation):
         """
         Extracts the ego vehicle's mission goal from a raw environment observation.
 
@@ -132,15 +132,13 @@ class StatePreprocessor:
         return state.ego_vehicle_state.mission.goal
 
     @staticmethod
-    def _extract_ego_path(goal, waypoints, start):
-        return get_path_to_goal(
-            goal=goal,
-            paths=waypoints,
-            start=start
-        )
+    def extract_ego_path(goal, waypoints, start):
+        return get_path_to_goal(goal=goal, paths=waypoints, start=start)
 
     @staticmethod
-    def _extract_closest_waypoint(goal_path, ego_position, ego_heading, num_lookahead=100):
+    def extract_closest_waypoint(
+        goal_path, ego_position, ego_heading, num_lookahead=100
+    ):
         return get_closest_waypoint(
             num_lookahead=num_lookahead,
             goal_path=goal_path,
@@ -149,7 +147,7 @@ class StatePreprocessor:
         )
 
     @staticmethod
-    def _extract_social_vehicles(state: Observation):
+    def extract_social_vehicles(state: Observation):
         """
         Extracts the social vehicles from a raw environment observation.
 

@@ -13,6 +13,7 @@ from ultra.utils.common import (
 
 class BaselineStatePreprocessor(StatePreprocessor):
     """The State Preprocessor used by the baseline agents."""
+
     _NORMALIZATION_REFERENCES = {
         "speed": 30.0,
         "distance_from_center": 1.0,
@@ -25,10 +26,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
     }
 
     def __init__(
-        self,
-        social_vehicle_config,
-        observation_waypoints_lookahead,
-        action_size,
+        self, social_vehicle_config, observation_waypoints_lookahead, action_size,
     ):
         self._state_description = {
             "images": {},
@@ -92,7 +90,8 @@ class BaselineStatePreprocessor(StatePreprocessor):
             for key in self._state_description["low_dim_states"]
         ]
         low_dim_states = [
-            value if isinstance(value, collections.abc.Iterable)
+            value
+            if isinstance(value, collections.abc.Iterable)
             else np.asarray([value]).astype(np.float32)
             for value in normalized
         ]
@@ -109,7 +108,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
                 ego_vehicle_heading=state["heading"],
                 neighborhood_vehicles=state["social_vehicles"],
                 social_vehicle_config=social_vehicle_config,
-                waypoint_paths=state["waypoint_paths"]
+                waypoint_paths=state["waypoint_paths"],
             )
             if social_capacity > 0
             else []
@@ -118,7 +117,9 @@ class BaselineStatePreprocessor(StatePreprocessor):
         social_vehicles = torch.empty(0, 0)
 
         if social_vehicle_dimension:
-            social_vehicles = torch.from_numpy(np.asarray(state["social_vehicles"])).float()
+            social_vehicles = torch.from_numpy(
+                np.asarray(state["social_vehicles"])
+            ).float()
             social_vehicles = social_vehicles.reshape((-1, social_vehicle_dimension))
         social_vehicles = social_vehicles.unsqueeze(0) if unsqueeze else social_vehicles
         social_vehicles = social_vehicles.to(device) if device else social_vehicles
@@ -133,24 +134,22 @@ class BaselineStatePreprocessor(StatePreprocessor):
     @staticmethod
     def _adapt_observation_for_baseline(state):
         # Get basic information about the ego vehicle.
-        ego_position = StatePreprocessor._extract_ego_position(state)
-        ego_heading = StatePreprocessor._extract_ego_heading(state)
-        ego_speed = StatePreprocessor._extract_ego_speed(state)
-        ego_steering = StatePreprocessor._extract_ego_steering(state)
-        ego_start = StatePreprocessor._extract_ego_start(state)
-        ego_goal = StatePreprocessor._extract_ego_goal(state)
-        ego_waypoints = StatePreprocessor._extract_ego_waypoints(state)
-        social_vehicle_states = StatePreprocessor._extract_social_vehicles(state)
+        ego_position = StatePreprocessor.extract_ego_position(state)
+        ego_heading = StatePreprocessor.extract_ego_heading(state)
+        ego_speed = StatePreprocessor.extract_ego_speed(state)
+        ego_steering = StatePreprocessor.extract_ego_steering(state)
+        ego_start = StatePreprocessor.extract_ego_start(state)
+        ego_goal = StatePreprocessor.extract_ego_goal(state)
+        ego_waypoints = StatePreprocessor.extract_ego_waypoints(state)
+        social_vehicle_states = StatePreprocessor.extract_social_vehicles(state)
 
         # Identify the path the ego is following.
-        ego_goal_path = StatePreprocessor._extract_ego_path(
-            goal=ego_goal,
-            waypoints=ego_waypoints,
-            start=ego_start,
+        ego_goal_path = StatePreprocessor.extract_ego_path(
+            goal=ego_goal, waypoints=ego_waypoints, start=ego_start,
         )
 
         # Get the closest waypoint to the ego.
-        ego_closest_waypoint, _ = StatePreprocessor._extract_closest_waypoint(
+        ego_closest_waypoint, _ = StatePreprocessor.extract_closest_waypoint(
             goal_path=ego_goal_path,
             ego_position=ego_position,
             ego_heading=ego_heading,
@@ -158,7 +157,9 @@ class BaselineStatePreprocessor(StatePreprocessor):
         )
 
         # Calculate the ego's distance from the center of the lane.
-        signed_distance_from_center = ego_closest_waypoint.signed_lateral_error(ego_position)
+        signed_distance_from_center = ego_closest_waypoint.signed_lateral_error(
+            ego_position
+        )
         lane_width = ego_closest_waypoint.lane_width * 0.5
         ego_distance_from_center = signed_distance_from_center / lane_width
 
