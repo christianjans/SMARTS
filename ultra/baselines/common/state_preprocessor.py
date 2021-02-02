@@ -19,7 +19,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+import numpy as np
+
 from smarts.core.sensors import Observation
+from ultra.baselines.common.social_vehicle_extraction import (
+    get_social_vehicles_leading,
+    get_social_vehicles_states_sorted_by_distance
+)
 from ultra.utils.common import (
     get_closest_waypoint,
     get_path_to_goal,
@@ -32,6 +38,34 @@ class StatePreprocessor:
 
     def _preprocess_state(self, state, *args, **kwargs):
         raise NotImplementedError("State preprocessing is not defined.")
+
+    @staticmethod
+    def get_social_vehicles(
+        social_vehicles,
+        social_vehicle_config,
+        ego_position,
+        ego_heading,
+        ego_waypoints,
+    ):
+        if social_vehicle_config["encoder"]["use_leading_vehicles"]:
+            social_vehicles = get_social_vehicles_leading(
+                ego_vehicle_pos=ego_position,
+                ego_vehicle_heading=ego_heading,
+                neighborhood_vehicles=social_vehicles,
+                waypoint_paths=ego_waypoints,
+                extractor_func=social_vehicle_config["social_vehicle_extractor_func"],
+                **social_vehicle_config["encoder"]["use_leading_vehicles"],
+            )
+        else:
+            social_vehicles = get_social_vehicles_states_sorted_by_distance(
+                ego_vehicle_pos=ego_position,
+                ego_vehicle_heading=ego_heading,
+                neighborhood_vehicles=social_vehicles,
+                social_vehicle_config=social_vehicle_config,
+                extractor_func=social_vehicle_config["social_vehicle_extractor_func"],
+            )
+        social_vehicles = np.asarray(social_vehicles).astype(np.float32)
+        return social_vehicles
 
     @staticmethod
     def extract_ego_speed(state: Observation):

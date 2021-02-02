@@ -2,7 +2,6 @@ import collections.abc
 import numpy as np
 import torch
 
-from ultra.baselines.common.social_vehicle_extraction import get_social_vehicles
 from ultra.baselines.common.state_preprocessor import StatePreprocessor
 from ultra.utils.common import (
     rotate2d_vector,
@@ -102,12 +101,12 @@ class BaselineStatePreprocessor(StatePreprocessor):
 
         # Apply the social vehicle encoder (if applicable).
         state["social_vehicles"] = (
-            get_social_vehicles(
-                ego_vehicle_pos=state["ego_position"],
-                ego_vehicle_heading=state["heading"],
-                neighborhood_vehicles=state["social_vehicles"],
+            self.get_social_vehicles(
+                social_vehicles=state["social_vehicles"],
                 social_vehicle_config=social_vehicle_config,
-                waypoint_paths=state["waypoint_paths"],
+                ego_position=state["ego_position"],
+                ego_heading=state["heading"],
+                ego_waypoints=state["waypoint_paths"],
             )
             if social_capacity > 0
             else []
