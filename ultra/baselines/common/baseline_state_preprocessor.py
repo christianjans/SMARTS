@@ -129,25 +129,24 @@ class BaselineStatePreprocessor(StatePreprocessor):
         }
         return out
 
-    @staticmethod
-    def _adapt_observation_for_baseline(state):
+    def _adapt_observation_for_baseline(self, state):
         # Get basic information about the ego vehicle.
-        ego_position = StatePreprocessor.extract_ego_position(state)
-        ego_heading = StatePreprocessor.extract_ego_heading(state)
-        ego_speed = StatePreprocessor.extract_ego_speed(state)
-        ego_steering = StatePreprocessor.extract_ego_steering(state)
-        ego_start = StatePreprocessor.extract_ego_start(state)
-        ego_goal = StatePreprocessor.extract_ego_goal(state)
-        ego_waypoints = StatePreprocessor.extract_ego_waypoints(state)
-        social_vehicle_states = StatePreprocessor.extract_social_vehicles(state)
+        ego_position = self.extract_ego_position(state)
+        ego_heading = self.extract_ego_heading(state)
+        ego_speed = self.extract_ego_speed(state)
+        ego_steering = self.extract_ego_steering(state)
+        ego_start = self.extract_ego_start(state)
+        ego_goal = self.extract_ego_goal(state)
+        ego_waypoints = self.extract_ego_waypoints(state)
+        social_vehicle_states = self.extract_social_vehicles(state)
 
         # Identify the path the ego is following.
-        ego_goal_path = StatePreprocessor.extract_ego_goal_path(
+        ego_goal_path = self.extract_ego_goal_path(
             ego_goal=ego_goal, ego_waypoints=ego_waypoints, ego_start=ego_start,
         )
 
         # Get the closest waypoint to the ego.
-        ego_closest_waypoint, _ = StatePreprocessor.extract_closest_waypoint(
+        ego_closest_waypoint, _ = self.extract_closest_waypoint(
             ego_goal_path=ego_goal_path,
             ego_position=ego_position,
             ego_heading=ego_heading,
@@ -185,8 +184,7 @@ class BaselineStatePreprocessor(StatePreprocessor):
         )
         return basic_state
 
-    @staticmethod
-    def _normalize(key, value):
-        if key not in BaselineStatePreprocessor._NORMALIZATION_REFERENCES:
+    def _normalize(self, key, value):
+        if key not in self._NORMALIZATION_REFERENCES:
             return value
-        return value / BaselineStatePreprocessor._NORMALIZATION_REFERENCES[key]
+        return value / self._NORMALIZATION_REFERENCES[key]
